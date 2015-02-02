@@ -10,38 +10,26 @@ function [y] = ssaSignal(x,L,I)
 
 %% Step1 : Build trayectory matrix
 
-N=length(x); 
+N=length(x);
 if L>N/2
     L=N-L;
 end;
-K=N-L+1; 
-X=zeros(L,K);  
+K=N-L+1;
+X=zeros(L,K);
 for i=1:K
-    X(1:L,i)=x(i:L+i-1); 
+    X(1:L,i)=x(i:L+i-1);
 end
-    
+
 %% Step 2: SVD
 
-S=X*X'; 
-[U,autoval]=eig(S);
-[d,i]=sort(-diag(autoval));  
-d=-d;
-U=U(:,i);sev=sum(d);
-eigenP = (d./sev)*100; % eigenvalue percentage
-% plot(eigenP),hold on,plot(eigenP,'rx');
-% title('Singular Spectrum');xlabel('Eigenvalue Number');ylabel('Eigenvalue (% Norm of trajectory matrix retained)')
-V=(X')*U; 
-rc=U*V';
-Vt=V';
-
+[U, S, V] = svd(X, 'econ');
+rca = U(:, I) * S(I, I) * V(:, I)';
 
 %% Step 3: Grouping
-% I = [1;2];
-rca=U(:,I)*Vt(I,:);
 
 %% Step 4: Reconstruction
 
-   y=zeros(N,1);  
+   y=zeros(N,1);
    Lp=min(L,K);
    Kp=max(L,K);
 
