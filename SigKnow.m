@@ -157,6 +157,9 @@ xssa1 = ssaSignal(x1,L,I); % Doing SSA on the first PPG channel
 x1 = xssa1;
 xssa2 = ssaSignal(x2,L,I); % Doing SSA on the second PPG channel
 x2 = xssa2;
+%WwWw = removeMA([x1;x2],[m1;m2;m3]);
+%x1 = WwWw(1,:);
+%x2 = WwWw(2,:);
 
 % ======================== FFT ==========================
 % Using FFT to look at the spectrum of this window after SSA
@@ -234,7 +237,7 @@ for jj = 1:length(MAf)
                         peakA(kk,maidx(maidxclose(maidxclosei))) = peakA(kk,maidx(maidxclose(maidxclosei)))*2;
                     end;
                 end;
-            end;   
+            end;
         end;
     end;
 end;
@@ -247,8 +250,8 @@ if niter <= avgwin % Initial Guess
     guessBPM = guessf(1) * 60;
 else
 %     maAgrad(niter) = (maA(niter-1)-maA(niter-mawin+1-1))/mawin;
-    if isdisplay == 1 && niter > 10
-        guessf = peakselection2(niter,peakf,peakA,f,A,preguessBPM,preguessavgBPM,maA,realbpm,MAf,0,peakh);
+    if isdisplay == 1 && niter > 20 
+        guessf = peakselection2(niter,peakf,peakA,f,A,preguessBPM,preguessavgBPM,maA,realbpm,MAf,1,peakh);
     else
         guessf = peakselection2(niter,peakf,peakA,f,A,preguessBPM,preguessavgBPM,maA,realbpm,MAf,0);
     end;

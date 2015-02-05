@@ -234,7 +234,7 @@ end
 % Default values for optional parameters
 
 % All
-verbose           = 'on';
+verbose           = 'off';
 
 % Default values for 'pcamat' parameters
 firstEig          = 1;
@@ -249,7 +249,7 @@ finetune          = 'off';
 a1                = 1;
 a2                = 1;
 myy               = 1;
-stabilization     = 'off';
+stabilization     = 'on';
 epsilon           = 0.0001;
 maxNumIterations  = 50;
 maxFinetune       = 5;

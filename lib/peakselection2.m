@@ -89,7 +89,8 @@ for c = 1:numchannel
             end;
             cost(c,j) = fcost(c,j) + 1.5*((Acost(c,c,j))+sum(Acost(c,:,j)))/(numchannel+1);
         end;
-        guessf(c,1) = fcandidate(c,find(cost(c,:) == min(cost(c,:))));
+        QAQ = fcandidate(c,find(cost(c,:) == min(cost(c,:))));
+        guessf(c,1) = QAQ(:,1);
     else
         guessf(c,1) = f(c,A(c,:) == maxA);
     end;
