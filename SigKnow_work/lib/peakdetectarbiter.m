@@ -7,7 +7,7 @@ idx = [];
 lasti = 0;
 for i = 1: length(fi)-1
     if fi(i) ~= fi(i+1)-1
-        idx = [idx, floor(mean(fi(lasti+1: i)))];
+        idx = [idx, 1+floor(mean(fi(lasti+1: i)))];
         lasti = i;
     end
 end
