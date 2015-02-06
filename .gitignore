@@ -12,6 +12,8 @@ build/
 develop-eggs/
 dist/
 downloads/
+TestData/
+TrainData/
 eggs/
 lib64/
 parts/
