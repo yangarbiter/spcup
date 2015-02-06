@@ -87,8 +87,9 @@ if niter == 5
 end;
 
 guessf = zeros(numchannel,1);
+costplot = zeros(3,50,numchannel);
 if selecttype == 1
-    guessf = costbase(niter,fcandidate, peakA, heartindex, preBPM, preavgBPM, maxABPM, magrad, costftype, costAtype, isneighboring, numchannel);
+    [guessf,costplot] = costbase(niter,fcandidate, peakA, heartindex, preBPM, preavgBPM, maxABPM, magrad, costftype, costAtype, isneighboring, numchannel);
 elseif selecttype == 2
     [guessf,neighborf] = rulebase(niter,fcandidate, peakA, heartindex, preBPM, preavgBPM, maxABPM, MAf, magrad, costftype, costAtype, isneighboring, numchannel);
 end;
@@ -105,6 +106,11 @@ if isplot ~= 0
     figure(peakh);
     for c = 1:numchannel
         subplot(numchannel,1,c); hold on;
+        costbaridx = find(fcandidate(c,:)~=0);
+        costbar = costplot(2:3,costbaridx,c)/-200;
+        bar(fcandidate(c,costbaridx),costbar','stacked');
+        xlim([0,5]);
+        
         stem(f(c,1:400),A(c,1:400),'o');
         stem(MAf,MAp/max(MAp),'go');
         hidx = find(heartindex(c,:)~=0);
@@ -118,8 +124,9 @@ if isplot ~= 0
         plot(preBPM/60,0,'ko');
         plot(preavgBPM/60,0,'yo');
         plot(realbpm/60,0,'ro'); hold off;
+        
     end;
-%     pause();
+     pause();
     hold off; 
 end;
 
@@ -157,12 +164,14 @@ end;
 
 end
 
-function [guessf,neighborf] = costbase(niter,fcandidate, peakA, heartindex, preBPM, preavgBPM, ...
+function [guessf,costplot,neighborf] = costbase(niter,fcandidate, peakA, heartindex, preBPM, preavgBPM, ...
                                         maxABPM, magrad, costftype, costAtype, isneighboring, numchannel)
 guessf = zeros(numchannel,1);
 fcost = ones(numchannel,50) * 9999;
 Acost = ones(numchannel,numchannel,50) * 9999;
 cost = ones(numchannel,50) * 9999;
+costplot = zeros(3,50,numchannel);
+Acoeff = 30;
 for c = 1:numchannel
     if ~isempty(fcandidate(c,:))
         for j = 1:length(fcandidate(c,:))
@@ -174,7 +183,12 @@ for c = 1:numchannel
                 Acost(c,k,j) = costA(peakA(c,heartindex(c,j)),magrad,maxABPM(k),costAtype);
             end;
 %             cost(c,j) = fcost(c,j) + 1.5*((Acost(c,c,j))+sum(Acost(c,:,j)))/(numchannel+1);
-            cost(c,j) = fcost(c,j) + 100*(Acost(c,c,j));
+            cost(c,j) = fcost(c,j) + Acoeff*(Acost(c,c,j));
+            costplot(1,j,c) = cost(c,j);
+            if costplot(1,j,c) < 200
+                costplot(2,j,c) = fcost(c,j);
+                costplot(3,j,c) = Acoeff*(Acost(c,c,j));
+            end
         end;
    
         minlist = find(cost(c,:) == min(cost(c,:)));
@@ -238,6 +252,7 @@ lambdaf = 8;
 lambdafavg = 10;
 lambdafgrad = 6;
 lambdafavggrad = 8;
+offset = -5;
 BPMdiff = 1/2;
 if magrad > 0.0015 % increasing
     preBPM = preBPM + 5;
@@ -266,7 +281,10 @@ else % normal
     costfavg = lambdafavg*dfavg;    
 end;
 
-cost = costf + costfavg;
+cost = costf + costfavg + offset;
+if cost < 0
+    cost = 0;
+end;
 % exceed threshold
 if abs(f-preBPM/60) > BPMdiff
     cost = 9999;
@@ -282,6 +300,7 @@ lambdaf = 8;
 lambdafavg = 10;
 lambdafgrad = 6;
 lambdafavggrad = 8;
+offset = -5;
 BPMdiff = 1/2; % When the difference between fcandidate and previous guess is larger than this threshold, we set the cost to be very large 
 
 df = abs(f-preBPM/60) / BPMdiff;
@@ -310,7 +329,10 @@ else
     costfavg = lambdafavg*dfavg;    
 end;
 
-cost = costf + costfavg;
+cost = costf + costfavg + offset;
+if cost < 0
+    cost = 0;
+end;
 % exceed threshold
 if abs(f-preBPM/60) > BPMdiff
     cost = 9999;

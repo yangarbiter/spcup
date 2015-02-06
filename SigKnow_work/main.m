@@ -55,7 +55,7 @@ initcosttype = 2;
 % peakdettype
 %   1: peakdet
 %   2: critical point detect
-peakdettype = 1;
+peakdettype = 2;
 
 % For testing
 guessBPMA = zeros(10,2,200);        % guessBPM amplitude
@@ -63,11 +63,11 @@ error1 = zeros(13,1); error2 = zeros(13,1);
 elapsedtime = zeros(13,1);
 
 % Data id range
-sdataidx = 1; edataidx = 1;
+sdataidx = 10; edataidx = 10;
 % datatype:
 %   1: data with answer
 %   2: test data
-datatype = 2;
+datatype = 1;
 % frequencytype:
 %   1: rectangular
 %   2: gaussian window
@@ -80,7 +80,7 @@ fftwindow = 4;
 
 % display result figure or not
 isdisplay = 1;
-displayiter = 1;
+displayiter = 14;
 isrecord = 0;
 
 %% ===================== Start ==========================

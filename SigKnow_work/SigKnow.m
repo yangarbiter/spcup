@@ -260,7 +260,7 @@ for jj = 1:numf
         peakf(jj,1:length(f(maxfpeak(:,1)))) = f(jj,maxfpeak(:,1))';
         peakA(jj,1:length(f(maxfpeak(:,1)))) = maxfpeak(:,2)';
     elseif peakdettype == 2
-        [maxfpeak] = peakdetectarbiter(A(jj,:),10^(-8)*5); % peak detection
+        [maxfpeak] = peakdetectarbiter(A(jj,:),10^(-8)*10); % peak detection
         peakf(jj,1:length(f(jj,maxfpeak(1,:)))) = f(jj,maxfpeak(1,:))';
         peakA(jj,1:length(f(jj,maxfpeak(1,:)))) = A(jj,maxfpeak(1,:))';
     end
